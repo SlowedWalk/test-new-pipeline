@@ -21,9 +21,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{matrix.node-version}}
-      - name: npm install and npm test
+      - name: npm install and npm lint
         run: |
           npm i
+          npm i @angular/cli -g
           npm run lint
 
   build:
