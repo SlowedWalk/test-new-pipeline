@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: User Node.js ${{matrix.node-version}}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
           node-version: ${{matrix.node-version}}
       - name: npm install and npm lint
@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: User Node.js ${{matrix.node-version}}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}
       - name: npm build
@@ -59,7 +59,7 @@ jobs:
       - uses: burnett01/rsync-deployments@5.1
         with:
           switches: -avzr --delete
-          path: docs/
+          path: ../../docs/
           remote_path: /home/ubuntu/my-app
           remote_host: "${{ secrets.SERVER_HOST }}"
           remote_user: "${{ secrets.USERNAME }}"
