@@ -42,6 +42,7 @@ jobs:
       - name: npm build
         run: |
           npm i @angular/cli -g
+          npm i
           npm run build
 
   deploy:
