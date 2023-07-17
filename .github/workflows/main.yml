@@ -39,12 +39,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}
-      - name: npm build
-        run: |
-          npm i @angular/cli -g
-          npm i
-          npm run build
-          ls -la
+      - name: Npm Install
+        run: npm install
+      - name: Npm Install Angular
+        run: npm install -g @angular/cli > /dev/null
+      - name: Npm build Angular Production
+        run: npm run build
 
   deploy:
     needs: build
@@ -57,11 +57,10 @@ jobs:
     steps:
       - name: rsync deployments
         run: ls -la
-      - uses: burnett01/rsync-deployments@5.1
+      - uses: easingthemes/ssh-deploy@v2.1.5
         with:
-          switches: -avzr --delete
-          path: ./*
-          remote_path: /home/ubuntu/my-app
-          remote_host: "${{ secrets.SERVER_HOST }}"
-          remote_user: "${{ secrets.USERNAME }}"
-          remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          SOURCE: "dist/docs/"
+          TARGET: "/home/ubuntu/my-app"
+          REMOTE_HOST: "${{ secrets.SERVER_HOST }}"
+          REMOTE_USER: "${{ secrets.USERNAME }}"
+          SSH_PRIVATE_KEY: "${{ secrets.SSH_PRIVATE_KEY }}"
