@@ -44,6 +44,7 @@ jobs:
           npm i @angular/cli -g
           npm i
           npm run build
+          ls -la
 
   deploy:
     needs: build
