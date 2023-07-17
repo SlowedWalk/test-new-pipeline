@@ -23,8 +23,8 @@ jobs:
           node-version: ${{matrix.node-version}}
       - name: npm install and npm lint
         run: |
-          npm i
           npm i @angular/cli -g
+          npm i
           npm run lint
 
   build:
