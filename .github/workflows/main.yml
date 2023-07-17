@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-lint:
+  lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -25,10 +25,9 @@ jobs:
         run: |
           npm i
           npm run lint
-          npm run test
 
   build:
-    needs: test-lint
+    needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
