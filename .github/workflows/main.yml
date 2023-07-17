@@ -1,84 +1,81 @@
 name: CI/CD Pipeline
 
 on:
-    push:
-        branches: [ main ]
-    pull_request:
-        branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-    workflow_dispatch:
-
-env:
-    NODE_VERSION: 16.x
+  workflow_dispatch:
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [$NODE_VERSION]
-        steps:
-          - uses: actions/checkout@v2
-          - name: "Use Node.js $NODE_VERSION"
-            uses: actions/setup-node@v2
-            with:
-              node-version: $NODE_VERSION
-          - name: npm install and npm lint
-            run: |
-              npm i
-              npm run lint
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Use Node.js ${{matrix.node-version}}"
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: npm install and npm lint
+        run: |
+          npm i
+          npm run lint
 
-    test:
-        needs: lint
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [$NODE_VERSION]
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
 
-        steps:
-          - uses: actions/checkout@v2
-          - name: User Node.js $NODE_VERSION
-            uses: actions/setup-node@v2
-            with:
-              node-version: $NODE_VERSION
-          - name: npm install and npm test
-            run: |
-              npm i
-              npm run test
+    steps:
+      - uses: actions/checkout@v2
+      - name: User Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: npm install and npm test
+        run: |
+          npm i
+          npm run test
 
-    build:
-        needs: test
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                node-version: [$NODE_VERSION]
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
 
-        steps:
-          - uses: actions/checkout@v2
-          - name: User Node.js $NODE_VERSION
-            uses: actions/setup-node@v2
-            with:
-              node-version: $NODE_VERSION
-          - name: npm install and npm build
-            run: |
-              npm i
-              npm run build
+    steps:
+      - uses: actions/checkout@v2
+      - name: User Node.js ${{matrix.node-version}}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{matrix.node-version}}
+      - name: npm install and npm build
+        run: |
+          npm i
+          npm run build
 
-    deploy:
-        needs: build
-        runs-on: ubuntu-latest
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [$NODE_VERSION]
+    strategy:
+      matrix:
+        node-version: [16.x]
 
-        steps:
-          - name: rsync deployments
-            uses: burnett01/rsync-deployments@5.1
-            with:
-              switches: -avzr --delete
-              path: ./dist/test-new-pipeline/
-              remote_path: /home/ubuntu/my-app
-              remote_host: "${{ secrets.SERVER_HOST }}"
-              remote_user: "${{ secrets.USERNAME }}"
-              remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"
+    steps:
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@5.1
+        with:
+          switches: -avzr --delete
+          path: ./dist/test-new-pipeline/
+          remote_path: /home/ubuntu/my-app
+          remote_host: "${{ secrets.SERVER_HOST }}"
+          remote_user: "${{ secrets.USERNAME }}"
+          remote_key: "${{ secrets.SSH_PRIVATE_KEY }}"
