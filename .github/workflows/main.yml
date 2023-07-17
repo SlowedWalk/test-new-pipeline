@@ -47,6 +47,7 @@ jobs:
         run: npm run build
 
       - name: rsync deployments
+        run: ls -la
       - uses: easingthemes/ssh-deploy@v2.1.5
         with:
           SOURCE: "dist/docs/"
